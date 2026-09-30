@@ -3,11 +3,17 @@ import copy
 import pytest
 
 from mlnyc_records.serialize import TeacherSetBib
+from mlnyc_records.teacher_sets import TeacherSetCopy
 
 
 class TestTeacherSetBib:
     def test_teacher_set_bib(self, stub_bib_data):
-        set_bib = TeacherSetBib(**stub_bib_data)
+        set_copy = TeacherSetCopy(**stub_bib_data)
+        set_bib = TeacherSetBib(
+            control_number=set_copy.control_number,
+            leader=set_copy.leader,
+            field_list=set_copy.field_list,
+        )
         marc_record = set_bib.to_bib()
         field_strings = [str(i) for i in marc_record.fields]
         assert field_strings == [
@@ -64,7 +70,12 @@ class TestTeacherSetBib:
         set_data["pub_dates"] = pub_dates
         set_data["record_type"] = record_type
         set_data["language"] = lang
-        set_bib = TeacherSetBib(**set_data)
+        set_copy = TeacherSetCopy(**set_data)
+        set_bib = TeacherSetBib(
+            control_number=set_copy.control_number,
+            leader=set_copy.leader,
+            field_list=set_copy.field_list,
+        )
         marc_record = set_bib.to_bib()
         field_strings = [str(i) for i in marc_record.fields]
         assert field_strings == [
@@ -93,7 +104,12 @@ class TestTeacherSetBib:
     def test_teacher_set_enhanced(self, stub_bib_data):
         set_data = copy.deepcopy(stub_bib_data)
         set_data["enhanced"] = "E"
-        set_bib = TeacherSetBib(**set_data)
+        set_copy = TeacherSetCopy(**set_data)
+        set_bib = TeacherSetBib(
+            control_number=set_copy.control_number,
+            leader=set_copy.leader,
+            field_list=set_copy.field_list,
+        )
         marc_record = set_bib.to_bib()
         field_strings = [str(i) for i in marc_record.fields]
         assert field_strings == [
@@ -141,7 +157,12 @@ class TestTeacherSetBib:
     ):
         set_data = copy.deepcopy(stub_bib_data)
         set_data["set_title"] = title
-        set_bib = TeacherSetBib(**set_data)
+        set_copy = TeacherSetCopy(**set_data)
+        set_bib = TeacherSetBib(
+            control_number=set_copy.control_number,
+            leader=set_copy.leader,
+            field_list=set_copy.field_list,
+        )
         marc_record = set_bib.to_bib()
         field_strings = [str(i) for i in marc_record.fields]
         assert field_strings == [
@@ -186,7 +207,12 @@ class TestTeacherSetBib:
         ]
         set_data["contents_note"] = 'Set consists of 1 copy of "Book 1".'
         set_data["physical_description"] = "1 item(s)"
-        set_bib = TeacherSetBib(**set_data)
+        set_copy = TeacherSetCopy(**set_data)
+        set_bib = TeacherSetBib(
+            control_number=set_copy.control_number,
+            leader=set_copy.leader,
+            field_list=set_copy.field_list,
+        )
         marc_record = set_bib.to_bib()
         field_strings = [str(i) for i in marc_record.fields]
         assert field_strings == [
@@ -213,7 +239,12 @@ class TestTeacherSetBib:
         set_data = copy.deepcopy(stub_bib_data)
         set_data["local_topic_term"] = ["Community"]
         set_data["local_genre_term"] = ["Award Winners", "Nonfiction"]
-        set_bib = TeacherSetBib(**set_data)
+        set_copy = TeacherSetCopy(**set_data)
+        set_bib = TeacherSetBib(
+            leader=set_copy.leader,
+            field_list=set_copy.field_list,
+            control_number=set_copy.control_number,
+        )
         marc_record = set_bib.to_bib()
         field_strings = [str(i) for i in marc_record.fields]
         assert field_strings == [

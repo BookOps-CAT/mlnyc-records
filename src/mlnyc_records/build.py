@@ -4,7 +4,7 @@ from typing import Any
 
 from mlnyc_records.control_numbers import ControlNumberGenerator
 from mlnyc_records.serialize import TeacherSetBib
-from mlnyc_records.teacher_sets import SetData, TeacherSet
+from mlnyc_records.teacher_sets import SetData, TeacherSet, TeacherSetCopy
 from mlnyc_records.validate import TeacherSetModel
 
 logger = logging.getLogger(__name__)
@@ -50,15 +50,19 @@ class TeacherSetBuilder:
     ) -> list[TeacherSetBib]:
         copies = set_data["copies_of_set"]
         logger.debug(f"({control_number}) Creating {copies} copy/copies of set.")
-        set_copies = []
         valid = []
         set_data["control_number"] = control_number
         for copy_num in range(0, copies):
             set_copy_dict = copy.deepcopy(set_data)
             set_copy_dict["shelf_number"] = "[SHELF-NUMBER]"
             set_copy_dict["copy_number"] = copy_num + 1
-            set_copies.append(set_copy_dict)
-            valid.append(TeacherSetBib(**set_copy_dict))
+            set_copy = TeacherSetCopy(**set_copy_dict)
+            set_bib = TeacherSetBib(
+                control_number=set_copy.control_number,
+                field_list=set_copy.field_list,
+                leader=set_copy.leader,
+            )
+            valid.append(set_bib)
         logger.info(
             f"({control_number}) Created {len(valid)} valid copy/copies of set."
         )
