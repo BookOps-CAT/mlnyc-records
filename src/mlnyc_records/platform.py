@@ -23,8 +23,7 @@ class PlatformManager:
         return self
 
     def __exit__(self, *args, **kwargs) -> None:
-        if self.session:
-            self.session.close()
+        self.session.close()
 
     def search_platform_bibs(self, control_number: str) -> dict[str, Any]:
         response = self.session.search_controlNos(control_number)

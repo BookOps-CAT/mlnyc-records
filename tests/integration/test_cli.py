@@ -9,7 +9,7 @@ from mlnyc_records import main, mlnyc_records
 
 @pytest.fixture
 def mock_json_data(mocker) -> None:
-    data = b'{"curation_list_name": "Foo: Bar","copies_to_procure": 5,"taxonomies": [{"name": "genre", "values": "Comics & Graphic Novels"}, {"name": "grade", "values": "3-5"}, {"name": "language", "values": "English"}, {"name": "set_type", "values": "Book Club"}, {"name": "subject", "values": "Language Arts"}, {"name": "topic", "values": ["Concepts", "Ancient Civilization"]}],"item_count": 1,"items": [{"position": 1, "title": "Foo: Bar", "isbn": "9781338801910", "format": "book", "formatLabel": "Book", "copies": 10}]}'
+    data = b'{"curation_list_name": "Foo: Bar","copies_to_procure": 5,"taxonomies": [{"name": "genre", "values": "Comics & Graphic Novels"}, {"name": "grade", "values": "3-5"}, {"name": "language", "values": "English"}, {"name": "set_type", "values": "Book Club"}, {"name": "subject", "values": "Language Arts"}, {"name": "topic", "values": ["Concepts", "Ancient Civilization"]}],"item_count": 1,"items": [{"position": 1, "title": "Foo: Bar", "isbn": "9781338801910", "format": "book", "formatLabel": "Book", "copies": 10},{"position": 2, "title": "Puppet", "isbn": null, "format": "puppets", "formatLabel": "Puppets", "copies": 1}]}'
 
     mock_read = mocker.mock_open(read_data=data)
     mock_write = mocker.mock_open()

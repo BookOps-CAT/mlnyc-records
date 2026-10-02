@@ -26,15 +26,19 @@ def read_app_json(path: str | None = "data/new/json") -> list[dict[str, Any]]:
                     taxonomies[taxonomy["name"]].extend(values)
                 else:
                     taxonomies[taxonomy["name"]].append(values)
-            items = [
-                {
-                    "title": i["title"],
-                    "isbn": i["isbn"],
-                    "format": i["format"],
-                    "copies": i.get("copies", 1),
+            items = []
+            special_formats = []
+            for item in json_data["items"]:
+                item_data = {
+                    "copies": item["copies"],
+                    "isbn": item["isbn"],
+                    "format": item["format"],
+                    "title": item["title"],
                 }
-                for i in json_data["items"]
-            ]
+                if item["format"] in ["puppets", "textile"]:
+                    special_formats.append(item_data)
+                else:
+                    items.append(item_data)
             files.append(
                 {
                     "set_title": json_data["curation_list_name"],
