@@ -1,7 +1,7 @@
 [project]
 name = "mlnyc-records"
 version = "0.1.0"
-description = "Add your description here"
+description = "Scripts for building MyLibraryNYC MARC records."
 readme = "README.md"
 authors = [
     { name = "Charlotte Kostelic", email = "charlottekostelic@bookops.org" }
@@ -14,7 +14,11 @@ dependencies = [
     "pymarc>=5.4.0",
     "click>=8.5.0",
     "pydeps>=3.0.8",
+    "bookops-nypl-platform",
 ]
+
+[tool.uv.sources]
+bookops-nypl-platform = { git = "https://github.com/BookOps-CAT/bookops-nypl-platform" }
 
 [project.scripts]
 mlnyc = "mlnyc_records:main"

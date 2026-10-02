@@ -17,6 +17,15 @@ wheels = [
 ]
 
 [[package]]
+name = "bookops-nypl-platform"
+version = "0.7.0"
+source = { git = "https://github.com/BookOps-CAT/bookops-nypl-platform#0d76b75116249f2b52d8994c718a1b875b9da730" }
+dependencies = [
+    { name = "requests" },
+    { name = "types-requests" },
+]
+
+[[package]]
 name = "bookops-worldcat"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -253,6 +262,7 @@ name = "mlnyc-records"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "bookops-nypl-platform" },
     { name = "bookops-worldcat" },
     { name = "click" },
     { name = "dotenv" },
@@ -270,6 +280,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "bookops-nypl-platform", git = "https://github.com/BookOps-CAT/bookops-nypl-platform" },
     { name = "bookops-worldcat", specifier = ">=1.2.0" },
     { name = "click", specifier = ">=8.5.0" },
     { name = "dotenv", specifier = ">=0.9.9" },
