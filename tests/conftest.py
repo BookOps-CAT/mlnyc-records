@@ -5,14 +5,18 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from bookops_nypl_platform import PlatformSession, PlatformToken
 from bookops_worldcat import MetadataSession, WorldcatAccessToken
 from pymarc import Field, Indicators, Record, Subfield
 
 from mlnyc_records.teacher_sets import SetData, TeacherSet
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def mock_creds() -> None:
+    os.environ["NYPL_PLATFORM_CLIENT"] = "platform_client"
+    os.environ["NYPL_PLATFORM_SECRET"] = "platform_secret"
+    os.environ["NYPL_PLATFORM_OAUTH"] = "oauth_server"
     os.environ["WORLDCAT_KEY"] = "worldcat_key"
     os.environ["WORLDCAT_SECRET"] = "worldcat_secret"
 
@@ -203,7 +207,7 @@ class MockHTTPResponse:
 
 
 @pytest.fixture
-def mock_session(monkeypatch, stub_bib) -> None:
+def mock_session(monkeypatch, stub_bib, mock_creds) -> None:
     def get_worldcat_bib(*args, **kwargs):
         return MockHTTPResponse(_content=stub_bib.as_marc())
 
@@ -222,6 +226,16 @@ def mock_session(monkeypatch, stub_bib) -> None:
     def fake_token(*args, **kwargs) -> None:
         pass
 
+    def search_platform_bibs(*args, **kwargs):
+        ctrl_num = args[1]
+        if ctrl_num in ["nn-mlnyc-0000001", "nn-mlnyc-0000002"]:
+            return MockHTTPResponse({"data": [{"id": "1"}]})
+        else:
+            return MockHTTPResponse({"data": []})
+
+    monkeypatch.setattr(PlatformToken, "_get_token", fake_token)
+    monkeypatch.setattr(PlatformSession, "_update_authorization", fake_token)
+    monkeypatch.setattr(PlatformSession, "search_controlNos", search_platform_bibs)
     monkeypatch.setattr(WorldcatAccessToken, "_request_token", fake_token)
     monkeypatch.setattr(MetadataSession, "brief_bibs_search", get_worldcat_brief_bib)
     monkeypatch.setattr(MetadataSession, "bib_get", get_worldcat_bib)

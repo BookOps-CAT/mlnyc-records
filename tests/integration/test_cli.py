@@ -76,10 +76,10 @@ class TestCLI:
         result = cli_runner.invoke(cli=mlnyc_records, args=["build"])
         assert result.exit_code == 0
         assert [i.msg for i in caplog.records] == [
-            "Next control number is 2",
+            "Next control number is nn-mlnyc-0000003.",
             "Building teacher set from new data: 'Foo: Bar'.",
-            "(nn-mlnyc-0000002) Created 5 valid copy/copies of set.",
-            "(nn-mlnyc-0000002) Writing records to file for set.",
+            "(nn-mlnyc-0000003) Created 5 valid copy/copies of set.",
+            "(nn-mlnyc-0000003) Writing records to file for set.",
         ]
 
     def test_mlnyc_records_build_debug(self, cli_runner, caplog):
@@ -88,20 +88,24 @@ class TestCLI:
         assert result.exit_code == 0
         assert [i.msg for i in caplog.records] == [
             "Loading current control number data: {'used_numbers': [1]}",
-            "Next control number is 2",
+            "Searching Sierra for nn-mlnyc-0000001.",
+            "nn-mlnyc-0000001 found in Sierra.",
+            "nn-mlnyc-0000002 found in Sierra.",
+            "nn-mlnyc-0000003 not found in Sierra.",
+            "Next control number is nn-mlnyc-0000003.",
             "Building teacher set from new data: 'Foo: Bar'.",
             "ISBN/UPC `9781338801910`: searching brief bib records.",
             "OCLC number `ocn123456789`: retrieving full bib record.",
-            "(nn-mlnyc-0000002) Creating 5 copy/copies of set.",
-            "(nn-mlnyc-0000002) Created 5 valid copy/copies of set.",
-            "(nn-mlnyc-0000002) Writing records to file for set.",
+            "(nn-mlnyc-0000003) Creating 5 copy/copies of set.",
+            "(nn-mlnyc-0000003) Created 5 valid copy/copies of set.",
+            "(nn-mlnyc-0000003) Writing records to file for set.",
         ]
 
     def test_build_teacher_validation_error(self, cli_runner, mock_invalid_set, caplog):
         result = cli_runner.invoke(cli=mlnyc_records, args=["build"])
         assert result.exit_code == 0
         assert len(caplog.records) == 3
-        assert caplog.records[0].msg == "Next control number is 2"
+        assert caplog.records[0].msg == "Next control number is nn-mlnyc-0000003."
         assert (
             caplog.records[1].msg == "Building teacher set from new data: 'Foo: Bar'."
         )
