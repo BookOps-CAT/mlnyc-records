@@ -155,7 +155,7 @@ class TeacherSet:
         all_pub_dates = []
         fuzzy_dates = []
         for part in self.parts:
-            date = part.pub_date
+            date = getattr(part, "pub_date", "")
             if isinstance(date, str) and date.isdigit():
                 all_pub_dates.append(date)
             elif isinstance(date, str) and date.isalnum():

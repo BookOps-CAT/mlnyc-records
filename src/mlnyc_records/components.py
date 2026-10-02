@@ -99,7 +99,6 @@ class SpecialFormatSetPart:
     copies: int
     title: str
     description: str = ""
-    pub_date: str | None = None
 
 
 @dataclass
