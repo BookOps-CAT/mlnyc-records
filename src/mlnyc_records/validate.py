@@ -58,7 +58,6 @@ class SpecialFormatSetPartModel(BaseModel):
     copies: int
     title: str
     description: str = ""
-    pub_date: str | None = None
 
     def entry_dict(self) -> dict[str, Any]:
         return {}
