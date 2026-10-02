@@ -8,30 +8,30 @@ from mlnyc_records import main, mlnyc_records
 
 
 @pytest.fixture
-def mock_json_data(mocker) -> None:
+def mock_file_handling(monkeypatch, mocker) -> None:
     data = b'{"curation_list_name": "Foo: Bar","copies_to_procure": 5,"taxonomies": [{"name": "genre", "values": "Comics & Graphic Novels"}, {"name": "grade", "values": "3-5"}, {"name": "language", "values": "English"}, {"name": "set_type", "values": "Book Club"}, {"name": "subject", "values": "Language Arts"}, {"name": "topic", "values": ["Concepts", "Ancient Civilization"]}],"item_count": 1,"items": [{"position": 1, "title": "Foo: Bar", "isbn": "9781338801910", "format": "book", "formatLabel": "Book", "copies": 10},{"position": 2, "title": "Puppet", "isbn": null, "format": "puppets", "formatLabel": "Puppets", "copies": 1}]}'
 
-    mock_read = mocker.mock_open(read_data=data)
-    mock_write = mocker.mock_open()
-    mocker.patch("mlnyc_records.commands.open", mock_read)
-    mocker.patch("mlnyc_records.build.open", mock_write)
-
-
-@pytest.fixture
-def mock_read_app_json(monkeypatch, mock_json_data) -> None:
     def mock_iterdir(*args, **kwargs) -> list:
         return [Path("foo")]
 
     def mock_is_file(*args, **kwargs) -> bool:
         return True
 
+    def null_return(*args, **kwargs) -> bool:
+        pass
+
+    mock_read = mocker.mock_open(read_data=data)
+    mock_write = mocker.mock_open()
+    mocker.patch("mlnyc_records.commands.open", mock_read)
+    mocker.patch("mlnyc_records.build.open", mock_write)
     monkeypatch.setattr(Path, "iterdir", mock_iterdir)
     monkeypatch.setattr(Path, "is_file", mock_is_file)
+    monkeypatch.setattr("shutil.move", null_return)
 
 
 @pytest.fixture
 def cli_runner(
-    monkeypatch, mock_session, mock_control_number_file, mock_read_app_json
+    monkeypatch, mock_session, mock_control_number_file, mock_file_handling
 ) -> CliRunner:
     runner = CliRunner()
     monkeypatch.setattr("logging.config.dictConfig", lambda *args, **kwargs: None)

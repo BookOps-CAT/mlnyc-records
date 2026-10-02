@@ -1,6 +1,7 @@
 import datetime
 import json
 import logging
+import shutil
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -12,11 +13,14 @@ from mlnyc_records.build import TeacherSetBuilder
 logger = logging.getLogger(__name__)
 
 
-def read_app_json(path: str | None = "data/new/json") -> list[dict[str, Any]]:
+def create_file_list(path: str | None = "data/json") -> list[Path]:
     dir_path = Path(path)
+    return [i for i in dir_path.iterdir() if i.is_file()]
+
+
+def read_json_files(file_list: list[Path]) -> list[dict[str, Any]]:
     files = []
-    file_paths = [i for i in dir_path.iterdir() if i.is_file()]
-    for file_path in file_paths:
+    for file_path in file_list:
         with open(file_path, "rb") as fh:
             json_data = json.load(fh)
             taxonomies = defaultdict(list)
@@ -58,8 +62,9 @@ def read_app_json(path: str | None = "data/new/json") -> list[dict[str, Any]]:
 def build_records(outfile: str | None = None):
     builder = TeacherSetBuilder()
     today_str = datetime.datetime.strftime(datetime.date.today(), "%y%m%d")
-    outfile = f"data/new/marc/{today_str}_PROCESSED.mrc"
-    set_data = read_app_json()
+    outfile = f"data/marc/{today_str}_PROCESSED.mrc"
+    file_list = create_file_list()
+    set_data = read_json_files(file_list=file_list)
     for set_json in set_data:
         control_number = builder.ctrl_number_gen.next_control_number()
         try:
@@ -72,3 +77,6 @@ def build_records(outfile: str | None = None):
             )
             builder.write_marc_to_file(set_bibs=valid_set_copies, out_file=outfile)
             builder.ctrl_number_gen.save_state()
+    for file in file_list:
+        destination_dir = Path("data/processed")
+        shutil.move(file, destination_dir / file.name)
